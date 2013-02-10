@@ -122,7 +122,7 @@ class Cuboid
   
   # Calculates the bounding box containing all the supplied cuboids.
   #
-  # @param [Array] of Cuboids
+  # @param bounding_boxes [Array] of Cuboids
   #
   # @return [Cuboid] Representing the bounding box of all of the supplied Cuboids combined
   #
@@ -140,7 +140,7 @@ class Cuboid
     Cuboid.new origin, terminus
   end
   
-  # @param A 3D vertex as an [Array].
+  # @param point [Array] 3D vertex
   #
   # @return [Boolean] indicating whether the given point is within this Cuboid.
   #
@@ -152,7 +152,7 @@ class Cuboid
   
   # Expands the cuboid by distance d in all directions.
   #
-  # @param A [Numeric] distance for the Cuboid to be expanded by in all axial directions.
+  # @param d [Numeric] distance for the Cuboid to be expanded by in all axial directions.
   #
   # @return [self]
   #
@@ -164,7 +164,7 @@ class Cuboid
   
   # Determines whether this Cuboid intersects with another Cuboid.
   #
-  # @return [Cuboid]
+  # @return other_cuboid [Cuboid]
   #
   def intersects? other_cuboid
     not( self.top < other_cuboid.bottom ||
@@ -177,7 +177,7 @@ class Cuboid
   
   # Produces the Cuboid defined by the intersection of this Cuboid with another one, or returns false if there is none.
   #
-  # @param [Cubiod]
+  # @param other_cuboid [Cubiod]
   #
   # @return [Cuboid]
   #

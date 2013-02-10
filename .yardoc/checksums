@@ -1,9 +1,9 @@
 lib/rumesh.rb 2991dfbeacfef83171a85565057a5a28881d314a
 lib/rumesh/mesh.rb 9b4671d1ed68d839135feaa7ea5d706a908c5bbf
 lib/rumesh/volume.rb a8abd13738500419edb315e00734cc65bf96752e
-lib/rumesh/cuboid.rb 8d8c8812ac9dc05d082ed2bc7911000caf053821
+lib/rumesh/cuboid.rb 04f63be8c53399035cda8b5eabc6d426c54f7fc4
 lib/rumesh/shape_set.rb 5df4a646870380a3694bd132684c7aabf335a6b7
 lib/rumesh/narray_ext.rb d8fd76e15e9c513b4960d4ecd3e2dac04664a83d
 lib/rumesh/quick_index.rb 1191b80750d3763f4d2f07f6454c5fd267bdde13
 lib/rumesh/triple_buffer.rb c3db4307ea31eaeddc770fc2e5607ce084f9a2f1
-lib/rumesh/transformation_matrix.rb 322d9bd1f46f697c4d97d72380067312c3cbee5f
+lib/rumesh/transformation_matrix.rb 739228aa64497a432e424b4108e308cc28b74566
