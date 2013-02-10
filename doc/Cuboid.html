@@ -102,7 +102,10 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     
-<p>Cuboids are neccesarily aligned with the axes.</p>
+<p>Cuboid objects represent axis aligned cuboids which are defined by a
+miminum corner (origin) and a maximum corner (terminus), such that the x, y
+and z components of the <em>origin</em> are less  than the corresponding x,
+y and z components of the <em>terminus</em>.</p>
 
 
   </div>
@@ -120,7 +123,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#origin-instance_method" title="#origin (instance method)">- (Object) <strong>origin</strong> </a>
+      <a href="#origin-instance_method" title="#origin (instance method)">- (Array) <strong>origin</strong> </a>
     
 
     
@@ -138,7 +141,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute origin.</p>
+<p>The minimum corner of this Cuboid.</p>
 </div></span>
   
 </li>
@@ -147,7 +150,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#terminus-instance_method" title="#terminus (instance method)">- (Object) <strong>terminus</strong> </a>
+      <a href="#terminus-instance_method" title="#terminus (instance method)">- (Array) <strong>terminus</strong> </a>
     
 
     
@@ -165,7 +168,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute terminus.</p>
+<p>The maximum corner of this Cuboid.</p>
 </div></span>
   
 </li>
@@ -202,7 +205,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Representing the bounding box of all of the supplied Cuboids combined.</p>
+<p>Calculates the bounding box containing all the supplied cuboids.</p>
 </div></span>
   
 </li>
@@ -220,7 +223,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#back-instance_method" title="#back (instance method)">- (Object) <strong>back</strong> </a>
+      <a href="#back-instance_method" title="#back (instance method)">- (Float) <strong>back</strong> </a>
     
 
     
@@ -234,7 +237,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The minimum z value of this Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -242,7 +247,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#bottom-instance_method" title="#bottom (instance method)">- (Object) <strong>bottom</strong> </a>
+      <a href="#bottom-instance_method" title="#bottom (instance method)">- (Float) <strong>bottom</strong> </a>
     
 
     
@@ -256,7 +261,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The minimum y value of this Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -264,7 +271,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#center-instance_method" title="#center (instance method)">- (Object) <strong>center</strong> </a>
+      <a href="#center-instance_method" title="#center (instance method)">- (Array) <strong>center</strong> </a>
     
 
     
@@ -278,7 +285,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Calculates center point of this Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -310,7 +319,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#depth-instance_method" title="#depth (instance method)">- (Object) <strong>depth</strong> </a>
+      <a href="#depth-instance_method" title="#depth (instance method)">- (Float) <strong>depth</strong> </a>
     
 
     
@@ -324,7 +333,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Calculates the distance between the minimum and maximum z values of this
+Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -332,7 +344,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#diagonal_length-instance_method" title="#diagonal_length (instance method)">- (Object) <strong>diagonal_length</strong> </a>
+      <a href="#diagonal_length-instance_method" title="#diagonal_length (instance method)">- (Float) <strong>diagonal_length</strong> </a>
     
 
     
@@ -346,7 +358,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Calculates the distance between the minimum and maximum corners of this
+Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -368,7 +383,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Expands the cuboid by distance d in all directions.</p>
+</div></span>
   
 </li>
 
@@ -376,7 +393,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#front-instance_method" title="#front (instance method)">- (Object) <strong>front</strong> </a>
+      <a href="#front-instance_method" title="#front (instance method)">- (Float) <strong>front</strong> </a>
     
 
     
@@ -390,7 +407,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The maximum z value of this Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -398,7 +417,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#height-instance_method" title="#height (instance method)">- (Object) <strong>height</strong> </a>
+      <a href="#height-instance_method" title="#height (instance method)">- (Float) <strong>height</strong> </a>
     
 
     
@@ -412,7 +431,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Calculates the distance between the minimum and maximum y values of this
+Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -460,7 +482,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Finds the Cuboid defined by the intersection of this Cuboid with another
+one, or false if there is none.</p>
+</div></span>
   
 </li>
 
@@ -482,7 +507,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Determines whether this Cuboid and intersects with another Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -490,7 +517,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#left-instance_method" title="#left (instance method)">- (Object) <strong>left</strong> </a>
+      <a href="#left-instance_method" title="#left (instance method)">- (Float) <strong>left</strong> </a>
     
 
     
@@ -504,7 +531,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The minimum x value of this Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -512,7 +541,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#right-instance_method" title="#right (instance method)">- (Object) <strong>right</strong> </a>
+      <a href="#right-instance_method" title="#right (instance method)">- (Float) <strong>right</strong> </a>
     
 
     
@@ -526,7 +555,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The maximum x value of this Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -548,7 +579,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Creates a Mesh object of this Cuboid as a solid 3D shape.</p>
+</div></span>
   
 </li>
 
@@ -570,7 +603,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Generates a Wavefront obj string representing this Cuboid as a solid 3d
+shape.</p>
+</div></span>
   
 </li>
 
@@ -578,7 +614,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#top-instance_method" title="#top (instance method)">- (Object) <strong>top</strong> </a>
+      <a href="#top-instance_method" title="#top (instance method)">- (Float) <strong>top</strong> </a>
     
 
     
@@ -592,7 +628,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The maximum y value of this Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -600,7 +638,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#volume-instance_method" title="#volume (instance method)">- (Object) <strong>volume</strong> </a>
+      <a href="#volume-instance_method" title="#volume (instance method)">- (Float) <strong>volume</strong> </a>
     
 
     
@@ -614,7 +652,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>The volume of this Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -622,7 +662,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#width-instance_method" title="#width (instance method)">- (Object) <strong>width</strong> </a>
+      <a href="#width-instance_method" title="#width (instance method)">- (Float) <strong>width</strong> </a>
     
 
     
@@ -636,7 +676,10 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Calculates the distance between the minimum and maximum x values of this
+Cuboid.</p>
+</div></span>
   
 </li>
 
@@ -673,37 +716,39 @@
       <pre class="lines">
 
 
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60</pre>
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
@@ -717,6 +762,8 @@
     <span class='ivar'>@origin</span> <span class='op'>=</span> <span class='const'>Array</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='comma'>,</span><span class='id identifier rubyid_args'>args</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='comma'>,</span><span class='id identifier rubyid_args'>args</span><span class='lbracket'>[</span><span class='int'>2</span><span class='rbracket'>]</span><span class='rparen'>)</span>
     <span class='ivar'>@terminus</span> <span class='op'>=</span> <span class='const'>Array</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='lbracket'>[</span><span class='int'>3</span><span class='rbracket'>]</span><span class='comma'>,</span><span class='id identifier rubyid_args'>args</span><span class='lbracket'>[</span><span class='int'>4</span><span class='rbracket'>]</span><span class='comma'>,</span><span class='id identifier rubyid_args'>args</span><span class='lbracket'>[</span><span class='int'>5</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
+  <span class='ivar'>@origin</span><span class='period'>.</span><span class='id identifier rubyid_map!'>map!</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_f</span><span class='rparen'>)</span>
+  <span class='ivar'>@terminus</span> <span class='period'>.</span><span class='id identifier rubyid_map!'>map!</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_f</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='op'>&gt;</span> <span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span>
     <span class='id identifier rubyid_x'>x</span> <span class='op'>=</span> <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span>
     <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span>
@@ -748,7 +795,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="origin-instance_method">
   
-    - (<tt>Object</tt>) <strong>origin</strong> 
+    - (<tt>Array</tt>) <strong>origin</strong> 
   
 
   
@@ -757,13 +804,31 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute origin</p>
+<p>The minimum corner of this Cuboid.</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>of floats</p>
+</div>
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -771,12 +836,12 @@
       <pre class="lines">
 
 
-6
-7
-8</pre>
+12
+13
+14</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 6</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 12</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_origin'>origin</span>
   <span class='ivar'>@origin</span>
@@ -791,7 +856,7 @@
       <div class="method_details ">
   <h3 class="signature " id="terminus-instance_method">
   
-    - (<tt>Object</tt>) <strong>terminus</strong> 
+    - (<tt>Array</tt>) <strong>terminus</strong> 
   
 
   
@@ -800,13 +865,31 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute terminus</p>
+<p>The maximum corner of this Cuboid.</p>
 
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>of floats</p>
+</div>
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -814,12 +897,12 @@
       <pre class="lines">
 
 
-7
-8
-9</pre>
+18
+19
+20</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 7</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_terminus'>terminus</span>
   <span class='ivar'>@terminus</span>
@@ -848,7 +931,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Representing the bounding box of all of the supplied Cuboids combined</p>
+<p>Calculates the bounding box containing all the supplied cuboids.</p>
 
 
   </div>
@@ -900,22 +983,22 @@
       <pre class="lines">
 
 
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78</pre>
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 129</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_global_bounding_box'>global_bounding_box</span> <span class='id identifier rubyid_bounding_boxes'>bounding_boxes</span>
   <span class='id identifier rubyid_origin'>origin</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='int'>10</span><span class='op'>^</span><span class='int'>10</span><span class='comma'>,</span><span class='int'>10</span><span class='op'>^</span><span class='int'>10</span><span class='comma'>,</span><span class='int'>10</span><span class='op'>^</span><span class='int'>10</span><span class='rbracket'>]</span>
@@ -944,22 +1027,46 @@
       <div class="method_details first">
   <h3 class="signature first" id="back-instance_method">
   
-    - (<tt>Object</tt>) <strong>back</strong> 
+    - (<tt>Float</tt>) <strong>back</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The minimum z value of this Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Float</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-25</pre>
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_back'>back</span><span class='semicolon'>;</span> <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>2</span><span class='rbracket'>]</span> <span class='kw'>end</span></pre>
     </td>
@@ -970,22 +1077,46 @@
       <div class="method_details ">
   <h3 class="signature " id="bottom-instance_method">
   
-    - (<tt>Object</tt>) <strong>bottom</strong> 
+    - (<tt>Float</tt>) <strong>bottom</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The minimum y value of this Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Float</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-23</pre>
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_bottom'>bottom</span><span class='semicolon'>;</span> <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='kw'>end</span></pre>
     </td>
@@ -996,24 +1127,53 @@
       <div class="method_details ">
   <h3 class="signature " id="center-instance_method">
   
-    - (<tt>Object</tt>) <strong>center</strong> 
+    - (<tt>Array</tt>) <strong>center</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Calculates center point of this Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>of three floats.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-17</pre>
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 48</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_center'>center</span><span class='semicolon'>;</span> <span class='ivar'>@terminus</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='ivar'>@origin</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='comma'>,</span><span class='id identifier rubyid_o'>o</span><span class='op'>|</span> <span class='id identifier rubyid_o'>o</span><span class='op'>+</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='op'>-</span><span class='id identifier rubyid_o'>o</span><span class='rparen'>)</span><span class='op'>/</span><span class='int'>2</span> <span class='rbrace'>}</span> <span class='kw'>end</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_center'>center</span><span class='semicolon'>;</span> <span class='ivar'>@terminus</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='ivar'>@origin</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='comma'>,</span><span class='id identifier rubyid_o'>o</span><span class='op'>|</span> <span class='id identifier rubyid_o'>o</span><span class='op'>+</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='op'>-</span><span class='id identifier rubyid_o'>o</span><span class='rparen'>)</span><span class='op'>/</span><span class='int'>2</span> <span class='rbrace'>}</span> <span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1083,14 +1243,14 @@
       <pre class="lines">
 
 
-84
-85
-86
-87
-88</pre>
+147
+148
+149
+150
+151</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 147</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_contains?'>contains?</span><span class='lparen'>(</span><span class='id identifier rubyid_point'>point</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_point'>point</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='op'>&gt;=</span><span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_point'>point</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='op'>&lt;=</span><span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> 
@@ -1105,24 +1265,49 @@
       <div class="method_details ">
   <h3 class="signature " id="depth-instance_method">
   
-    - (<tt>Object</tt>) <strong>depth</strong> 
+    - (<tt>Float</tt>) <strong>depth</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Calculates the distance between the minimum and maximum z values of this
+Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Float</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-13</pre>
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 36</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_depth'>depth</span><span class='semicolon'>;</span> <span class='lparen'>(</span><span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>2</span><span class='rbracket'>]</span> <span class='op'>-</span> <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>2</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_abs'>abs</span> <span class='kw'>end</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_depth'>depth</span><span class='semicolon'>;</span> <span class='lparen'>(</span><span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>2</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>-</span> <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>2</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_abs'>abs</span> <span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1131,24 +1316,49 @@
       <div class="method_details ">
   <h3 class="signature " id="diagonal_length-instance_method">
   
-    - (<tt>Object</tt>) <strong>diagonal_length</strong> 
+    - (<tt>Float</tt>) <strong>diagonal_length</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Calculates the distance between the minimum and maximum corners of this
+Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Float</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-15</pre>
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 42</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_diagonal_length'>diagonal_length</span><span class='semicolon'>;</span> <span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_sqrt'>sqrt</span><span class='lparen'>(</span> <span class='ivar'>@terminus</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='ivar'>@origin</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='comma'>,</span><span class='id identifier rubyid_o'>o</span><span class='op'>|</span> <span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='op'>-</span><span class='id identifier rubyid_o'>o</span><span class='rparen'>)</span><span class='op'>**</span><span class='int'>2</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_inject'>inject</span><span class='lparen'>(</span><span class='symbol'>:+</span><span class='rparen'>)</span> <span class='rparen'>)</span> <span class='kw'>end</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_diagonal_length'>diagonal_length</span><span class='semicolon'>;</span> <span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_sqrt'>sqrt</span><span class='lparen'>(</span> <span class='ivar'>@terminus</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='ivar'>@origin</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='comma'>,</span><span class='id identifier rubyid_o'>o</span><span class='op'>|</span> <span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='op'>-</span><span class='id identifier rubyid_o'>o</span><span class='rparen'>)</span><span class='op'>**</span><span class='int'>2</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_inject'>inject</span><span class='lparen'>(</span><span class='symbol'>:+</span><span class='rparen'>)</span> <span class='rparen'>)</span> <span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1166,6 +1376,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Expands the cuboid by distance d in all directions.</p>
+
 
   </div>
 </div>
@@ -1211,19 +1423,17 @@
       <pre class="lines">
 
 
-94
-95
-96
-97
-98
-99</pre>
+159
+160
+161
+162
+163</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 159</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_expand!'>expand!</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='rparen'>)</span>
-  <span class='comment'>#expands the cuboid by distance d in all directions
-</span>  <span class='ivar'>@origin</span> <span class='op'>=</span> <span class='ivar'>@origin</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='id identifier rubyid_d'>d</span><span class='rbracket'>]</span><span class='op'>*</span><span class='int'>3</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span><span class='id identifier rubyid_b'>b</span><span class='op'>|</span> <span class='id identifier rubyid_a'>a</span><span class='op'>+</span><span class='id identifier rubyid_b'>b</span><span class='rbrace'>}</span>
+  <span class='ivar'>@origin</span> <span class='op'>=</span> <span class='ivar'>@origin</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='id identifier rubyid_d'>d</span><span class='rbracket'>]</span><span class='op'>*</span><span class='int'>3</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span><span class='id identifier rubyid_b'>b</span><span class='op'>|</span> <span class='id identifier rubyid_a'>a</span><span class='op'>+</span><span class='id identifier rubyid_b'>b</span><span class='rbrace'>}</span>
   <span class='ivar'>@terminus</span> <span class='op'>=</span> <span class='ivar'>@terminus</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='id identifier rubyid_d'>d</span><span class='rbracket'>]</span><span class='op'>*</span><span class='int'>3</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span><span class='id identifier rubyid_b'>b</span><span class='op'>|</span> <span class='id identifier rubyid_a'>a</span><span class='op'>+</span><span class='id identifier rubyid_b'>b</span><span class='rbrace'>}</span>
   <span class='kw'>return</span> <span class='kw'>self</span>
 <span class='kw'>end</span></pre>
@@ -1235,22 +1445,46 @@
       <div class="method_details ">
   <h3 class="signature " id="front-instance_method">
   
-    - (<tt>Object</tt>) <strong>front</strong> 
+    - (<tt>Float</tt>) <strong>front</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The maximum z value of this Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Float</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-31</pre>
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_front'>front</span><span class='semicolon'>;</span> <span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>2</span><span class='rbracket'>]</span> <span class='kw'>end</span></pre>
     </td>
@@ -1261,24 +1495,49 @@
       <div class="method_details ">
   <h3 class="signature " id="height-instance_method">
   
-    - (<tt>Object</tt>) <strong>height</strong> 
+    - (<tt>Float</tt>) <strong>height</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Calculates the distance between the minimum and maximum y values of this
+Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Float</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-11</pre>
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 30</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_height'>height</span><span class='semicolon'>;</span> <span class='lparen'>(</span><span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>-</span> <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_abs'>abs</span> <span class='kw'>end</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_height'>height</span><span class='semicolon'>;</span> <span class='lparen'>(</span><span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>-</span> <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_abs'>abs</span> <span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1296,6 +1555,9 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Finds the Cuboid defined by the intersection of this Cuboid with another
+one, or false if there is none.</p>
+
 
   </div>
 </div>
@@ -1336,18 +1598,18 @@
       <pre class="lines">
 
 
-116
-117
-118
-119
-120
-121
-122
-123
-124</pre>
+184
+185
+186
+187
+188
+189
+190
+191
+192</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 116</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 184</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_intersection'>intersection</span> <span class='id identifier rubyid_other_cuboid'>other_cuboid</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_intersects?'>intersects?</span> <span class='id identifier rubyid_other_cuboid'>other_cuboid</span>
@@ -1375,6 +1637,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Determines whether this Cuboid and intersects with another Cuboid.</p>
+
 
   </div>
 </div>
@@ -1400,17 +1664,17 @@
       <pre class="lines">
 
 
-103
-104
-105
-106
-107
-108
-109
-110</pre>
+169
+170
+171
+172
+173
+174
+175
+176</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 103</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 169</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_intersects?'>intersects?</span> <span class='id identifier rubyid_other_cuboid'>other_cuboid</span>
   <span class='kw'>not</span><span class='lparen'>(</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_top'>top</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_other_cuboid'>other_cuboid</span><span class='period'>.</span><span class='id identifier rubyid_bottom'>bottom</span> <span class='op'>||</span>
@@ -1428,22 +1692,46 @@
       <div class="method_details ">
   <h3 class="signature " id="left-instance_method">
   
-    - (<tt>Object</tt>) <strong>left</strong> 
+    - (<tt>Float</tt>) <strong>left</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The minimum x value of this Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Float</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-21</pre>
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_left'>left</span><span class='semicolon'>;</span> <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='kw'>end</span></pre>
     </td>
@@ -1454,22 +1742,46 @@
       <div class="method_details ">
   <h3 class="signature " id="right-instance_method">
   
-    - (<tt>Object</tt>) <strong>right</strong> 
+    - (<tt>Float</tt>) <strong>right</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The maximum x value of this Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Float</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-27</pre>
+78</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_right'>right</span><span class='semicolon'>;</span> <span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='kw'>end</span></pre>
     </td>
@@ -1489,6 +1801,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Creates a Mesh object of this Cuboid as a solid 3D shape.</p>
+
 
   </div>
 </div>
@@ -1514,10 +1828,10 @@
       <pre class="lines">
 
 
-154</pre>
+226</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 154</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 226</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_mesh'>to_mesh</span><span class='semicolon'>;</span> <span class='const'>Mesh</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_to_obj'>to_obj</span><span class='comma'>,</span> <span class='symbol'>:obj</span> <span class='kw'>end</span></pre>
     </td>
@@ -1537,6 +1851,9 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>Generates a Wavefront obj string representing this Cuboid as a solid 3d
+shape.</p>
+
 
   </div>
 </div>
@@ -1562,32 +1879,32 @@
       <pre class="lines">
 
 
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
-146
-147
-148
-149
-150</pre>
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 128</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 198</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_obj'>to_obj</span>
   <span class='id identifier rubyid_obj_string'>obj_string</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
@@ -1620,22 +1937,46 @@
       <div class="method_details ">
   <h3 class="signature " id="top-instance_method">
   
-    - (<tt>Object</tt>) <strong>top</strong> 
+    - (<tt>Float</tt>) <strong>top</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The maximum y value of this Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Float</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-29</pre>
+84</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 84</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_top'>top</span><span class='semicolon'>;</span> <span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='kw'>end</span></pre>
     </td>
@@ -1646,22 +1987,46 @@
       <div class="method_details ">
   <h3 class="signature " id="volume-instance_method">
   
-    - (<tt>Object</tt>) <strong>volume</strong> 
+    - (<tt>Float</tt>) <strong>volume</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>The volume of this Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Float</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-19</pre>
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_volume'>volume</span><span class='semicolon'>;</span> <span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_width'>width</span><span class='op'>*</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_height'>height</span><span class='op'>*</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_depth'>depth</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_abs'>abs</span> <span class='kw'>end</span></pre>
     </td>
@@ -1672,24 +2037,49 @@
       <div class="method_details ">
   <h3 class="signature " id="width-instance_method">
   
-    - (<tt>Object</tt>) <strong>width</strong> 
+    - (<tt>Float</tt>) <strong>width</strong> 
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Calculates the distance between the minimum and maximum x values of this
+Cuboid.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Float</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-9</pre>
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/cuboid.rb', line 24</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_width'>width</span><span class='semicolon'>;</span> <span class='lparen'>(</span><span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='op'>-</span> <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_abs'>abs</span> <span class='kw'>end</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_width'>width</span><span class='semicolon'>;</span> <span class='lparen'>(</span><span class='ivar'>@terminus</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>-</span> <span class='ivar'>@origin</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_abs'>abs</span> <span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1700,7 +2090,7 @@
 </div>
 
     <div id="footer">
-  Generated on Sun Feb 10 00:44:58 2013 by
+  Generated on Sun Feb 10 17:14:00 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.4.1 (ruby-1.9.3).
 </div>

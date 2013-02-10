@@ -1,7 +1,7 @@
 lib/rumesh.rb 2991dfbeacfef83171a85565057a5a28881d314a
 lib/rumesh/mesh.rb 9b4671d1ed68d839135feaa7ea5d706a908c5bbf
 lib/rumesh/volume.rb a8abd13738500419edb315e00734cc65bf96752e
-lib/rumesh/cuboid.rb 2d4d89ad501f5ffbe0f65183d641c61df4e646e4
+lib/rumesh/cuboid.rb 2917de5e0e3b804bd02be330f1f342d37e44ba17
 lib/rumesh/shape_set.rb 5df4a646870380a3694bd132684c7aabf335a6b7
 lib/rumesh/narray_ext.rb faccb56ba28d97619ff92b298654bbea4ba919c1
 lib/rumesh/quick_index.rb b83a2eecb3a5111f6953957ab24628c8cc881788

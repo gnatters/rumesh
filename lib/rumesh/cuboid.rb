@@ -1,33 +1,92 @@
 
-# Cuboids are neccesarily aligned with the axes.
+# Cuboid objects represent axis aligned cuboids which are defined by a miminum corner (origin)
+# and a maximum corner (terminus), such that the x, y and z components of the _origin_ are less 
+# than the corresponding x, y and z components of the _terminus_.
 
 class Cuboid
   
+  # The minimum corner of this Cuboid.
+  #
+  # @return [Array] of floats
+  #
   attr_accessor :origin
+
+  # The maximum corner of this Cuboid.
+  #
+  # @return [Array] of floats
+  #
   attr_accessor :terminus
   
-  def width; (@terminus[0] - @origin[0]).abs end
+  # Calculates the distance between the minimum and maximum x values of this Cuboid.
+  #
+  # @return [Float]
+  #
+  def width; (@terminus[0].to_f - @origin[0]).abs end
   
-  def height; (@terminus[1] - @origin[1]).abs end
+  # Calculates the distance between the minimum and maximum y values of this Cuboid.
+  #
+  # @return [Float]
+  #
+  def height; (@terminus[1].to_f - @origin[1]).abs end
   
-  def depth; (@terminus[2] - @origin[2]).abs end
+  # Calculates the distance between the minimum and maximum z values of this Cuboid.
+  #
+  # @return [Float]
+  #
+  def depth; (@terminus[2].to_f - @origin[2]).abs end
   
-  def diagonal_length; Math.sqrt( @terminus.zip(@origin).map { |t,o| (t-o)**2 }.inject(:+) ) end
+  # Calculates the distance between the minimum and maximum corners of this Cuboid.
+  #
+  # @return [Float]
+  #
+  def diagonal_length; Math.sqrt( @terminus.zip(@origin).map { |t,o| (t.to_f-o)**2 }.inject(:+) ) end
   
-  def center; @terminus.zip(@origin).map { |t,o| o+(t-o)/2 } end
+  # Calculates center point of this Cuboid.
+  #
+  # @return (Array) of three floats.
+  #
+  def center; @terminus.zip(@origin).map { |t,o| o+(t.to_f-o)/2 } end
   
+  # The volume of this Cuboid.
+  #
+  # @return [Float]
+  #
   def volume; (self.width*self.height*self.depth).abs end
   
+  # The minimum x value of this Cuboid.
+  #
+  # @return [Float]
+  #
   def left; @origin[0] end
   
+  # The minimum y value of this Cuboid.
+  #
+  # @return [Float]
+  #
   def bottom; @origin[1] end
   
+  # The minimum z value of this Cuboid.
+  #
+  # @return [Float]
+  #
   def back; @origin[2] end
   
+  # The maximum x value of this Cuboid.
+  #
+  # @return [Float]
+  #
   def right; @terminus[0] end
   
+  # The maximum y value of this Cuboid.
+  #
+  # @return [Float]
+  #
   def top; @terminus[1] end
   
+  # The maximum z value of this Cuboid.
+  #
+  # @return [Float]
+  #
   def front; @terminus[2] end
     
   def initialize(*args)
@@ -42,6 +101,8 @@ class Cuboid
       @origin = Array.new(args[0],args[1],args[2])
       @terminus = Array.new(args[3],args[4],args[5])
     end
+    @origin.map!(&:to_f)
+    @terminus .map!(&:to_f)
     if @origin[0] > @terminus[0]
       x = @origin[0]
       @origin[0] = @terminus[0]
@@ -59,6 +120,8 @@ class Cuboid
     end
   end
   
+  # Calculates the bounding box containing all the supplied cuboids.
+  #
   # @param [Array] of Cuboids
   #
   # @return [Cuboid] Representing the bounding box of all of the supplied Cuboids combined
@@ -87,17 +150,20 @@ class Cuboid
     point[2]>=@origin[2] && point[2]<=@terminus[2]
   end
   
+  # Expands the cuboid by distance d in all directions.
+  #
   # @param A [Numeric] distance for the Cuboid to be expanded by in all axial directions.
   #
   # @return [self]
   #
   def expand!(d)
-    #expands the cuboid by distance d in all directions
     @origin = @origin.zip([d]*3).map {|a,b| a+b}
     @terminus = @terminus.zip([d]*3).map {|a,b| a+b}
     return self
   end
   
+  # Determines whether this Cuboid intersects with another Cuboid.
+  #
   # @return [Cuboid]
   #
   def intersects? other_cuboid
@@ -109,6 +175,8 @@ class Cuboid
          self.back > other_cuboid.front )    
   end
   
+  # Produces the Cuboid defined by the intersection of this Cuboid with another one, or returns false if there is none.
+  #
   # @param [Cubiod]
   #
   # @return [Cuboid]
@@ -123,6 +191,8 @@ class Cuboid
                [self.front, other_cuboid.front].min
   end
   
+  # Generates a Wavefront obj string representing this Cuboid as a solid 3d shape.
+  #
   # @return [String]
   #
   def to_obj
@@ -149,6 +219,8 @@ class Cuboid
     obj_string << "f 6// 8// 5//\n"
   end
   
+  # Creates a Mesh object of this Cuboid as a solid 3D shape.
+  #
   # @return [Mesh]
   #
   def to_mesh; Mesh.new self.to_obj, :obj end
