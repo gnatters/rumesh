@@ -102,7 +102,7 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     
-<p>Code borrowed from <a
+<p>Extends the NArray class with code borrowed from <a
 href="https://github.com/princelab/narray/wiki/Tentative-NArray-Tutorial">github.com/princelab/narray/wiki/Tentative-NArray-Tutorial</a></p>
 
 
@@ -144,8 +144,8 @@ href="https://github.com/princelab/narray/wiki/Tentative-NArray-Tutorial">github
 
   
     <span class="summary_desc"><div class='inline'>
-<p>borrows other dimension lengths from the first object and relies on it to
-raise errors (or not) upon concatenation.</p>
+<p>Produces a new NArray by concatenating a number of NArray objects along the
+specified dimension.</p>
 </div></span>
   
 </li>
@@ -168,7 +168,10 @@ raise errors (or not) upon concatenation.</p>
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Produces a new NArray by concatenating a number of NArray objects along the
+horizontal dimension (dim=0).</p>
+</div></span>
   
 </li>
 
@@ -190,7 +193,10 @@ raise errors (or not) upon concatenation.</p>
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Produces a new NArray by concatenating a number of NArray objects along the
+vertical dimension (dim=1).</p>
+</div></span>
   
 </li>
 
@@ -221,9 +227,7 @@ raise errors (or not) upon concatenation.</p>
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>object method interface.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -293,8 +297,8 @@ raise errors (or not) upon concatenation.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>borrows other dimension lengths from the first object and relies on it to
-raise errors (or not) upon concatenation.</p>
+<p>Produces a new NArray by concatenating a number of NArray objects along the
+specified dimension</p>
 
 
   </div>
@@ -321,8 +325,6 @@ raise errors (or not) upon concatenation.</p>
       <pre class="lines">
 
 
-9
-10
 11
 12
 13
@@ -338,10 +340,12 @@ raise errors (or not) upon concatenation.</p>
 23
 24
 25
-26</pre>
+26
+27
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cat'>cat</span><span class='lparen'>(</span><span class='id identifier rubyid_dim'>dim</span><span class='op'>=</span><span class='int'>0</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_narrays'>narrays</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>'dim' must be an integer (did you forget your dim arg?)</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_dim'>dim</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Integer</span><span class='rparen'>)</span>
@@ -375,16 +379,28 @@ raise errors (or not) upon concatenation.</p>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Produces a new NArray by concatenating a number of NArray objects along the
+horizontal dimension (dim=0)</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-28</pre>
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_hcat'>hcat</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_narrays'>narrays</span><span class='rparen'>)</span> <span class='semicolon'>;</span> <span class='id identifier rubyid_cat'>cat</span><span class='lparen'>(</span><span class='int'>0</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_narrays'>narrays</span><span class='rparen'>)</span> <span class='kw'>end</span></pre>
     </td>
@@ -401,16 +417,28 @@ raise errors (or not) upon concatenation.</p>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Produces a new NArray by concatenating a number of NArray objects along the
+vertical dimension (dim=1)</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-27</pre>
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_vcat'>vcat</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_narrays'>narrays</span><span class='rparen'>)</span> <span class='semicolon'>;</span> <span class='id identifier rubyid_cat'>cat</span><span class='lparen'>(</span><span class='int'>1</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_narrays'>narrays</span><span class='rparen'>)</span> <span class='kw'>end</span></pre>
     </td>
@@ -433,27 +461,16 @@ raise errors (or not) upon concatenation.</p>
   
 
   
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>object method interface</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div><table class="source_code">
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-33</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cat'>cat</span><span class='lparen'>(</span><span class='id identifier rubyid_dim'>dim</span><span class='op'>=</span><span class='int'>0</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_narrays'>narrays</span><span class='rparen'>)</span> <span class='semicolon'>;</span> <span class='const'>NArray</span><span class='period'>.</span><span class='id identifier rubyid_cat'>cat</span><span class='lparen'>(</span><span class='id identifier rubyid_dim'>dim</span><span class='comma'>,</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_narrays'>narrays</span><span class='rparen'>)</span> <span class='kw'>end</span></pre>
     </td>
@@ -476,10 +493,10 @@ raise errors (or not) upon concatenation.</p>
       <pre class="lines">
 
 
-35</pre>
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_hcat'>hcat</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_narrays'>narrays</span><span class='rparen'>)</span> <span class='semicolon'>;</span> <span class='const'>NArray</span><span class='period'>.</span><span class='id identifier rubyid_hcat'>hcat</span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_narrays'>narrays</span><span class='rparen'>)</span> <span class='kw'>end</span></pre>
     </td>
@@ -502,10 +519,10 @@ raise errors (or not) upon concatenation.</p>
       <pre class="lines">
 
 
-34</pre>
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/rumesh/narray_ext.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_vcat'>vcat</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_narrays'>narrays</span><span class='rparen'>)</span> <span class='semicolon'>;</span> <span class='const'>NArray</span><span class='period'>.</span><span class='id identifier rubyid_vcat'>vcat</span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_narrays'>narrays</span><span class='rparen'>)</span> <span class='kw'>end</span></pre>
     </td>
@@ -518,7 +535,7 @@ raise errors (or not) upon concatenation.</p>
 </div>
 
     <div id="footer">
-  Generated on Sun Feb 10 17:14:00 2013 by
+  Generated on Sun Feb 10 17:41:28 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.4.1 (ruby-1.9.3).
 </div>

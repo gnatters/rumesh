@@ -1,11 +1,13 @@
 
-# Code borrowed from https://github.com/princelab/narray/wiki/Tentative-NArray-Tutorial
+# Extends the NArray class with code borrowed from https://github.com/princelab/narray/wiki/Tentative-NArray-Tutorial
 
 class NArray
   
   class << self
     # borrows other dimension lengths from the first object and relies on it to
     # raise errors (or not) upon concatenation.
+    
+    # Produces a new NArray by concatenating a number of NArray objects along the specified dimension
     def cat(dim=0, *narrays)
       raise ArgumentError, "'dim' must be an integer (did you forget your dim arg?)" unless dim.is_a?(Integer)
       raise ArgumentError, "must have narrays to cat" if narrays.size == 0
@@ -24,11 +26,13 @@ class NArray
       end
       narr
     end
+    
+    # Produces a new NArray by concatenating a number of NArray objects along the vertical dimension (dim=1)
     def vcat(*narrays) ; cat(1, *narrays) end
+
+    # Produces a new NArray by concatenating a number of NArray objects along the horizontal dimension (dim=0)
     def hcat(*narrays) ; cat(0, *narrays) end
   end
-
-  # object method interface
 
   def cat(dim=0, *narrays) ; NArray.cat(dim, self, *narrays) end
   def vcat(*narrays) ; NArray.vcat(self, *narrays) end
