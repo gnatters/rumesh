@@ -4,8 +4,8 @@
 # Decides on load to use the NMatrix class if the NArray gem is loaded, otherwise it falls back on the Matrix class (requiring it if neccessary).
 
 module TransformationMatrix
-  # This module variable determines on load whether to use NMatrix or Matrix depending on availability.
-  @@matrix_class = (defined?(NMatrix) ? NMatrix : [(require 'matrix'), Matrix].last)
+  # This module variable determines on load whether to use NMatrix or Matrix depending on availability, with a preference for NMatrix.
+  @@matrix_class = ( (defined? NMatrix) ? NMatrix : [ (require 'matrix'), Matrix ].last )
   
   # @param theta (Float) angle of rotation
   # @param axis (Array) of rotation, also accepts Symbols: `:x`, `:y`, or `:z`.

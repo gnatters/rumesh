@@ -5,5 +5,5 @@ lib/rumesh/cuboid.rb 04f63be8c53399035cda8b5eabc6d426c54f7fc4
 lib/rumesh/shape_set.rb 5df4a646870380a3694bd132684c7aabf335a6b7
 lib/rumesh/narray_ext.rb d8fd76e15e9c513b4960d4ecd3e2dac04664a83d
 lib/rumesh/quick_index.rb 1191b80750d3763f4d2f07f6454c5fd267bdde13
-lib/rumesh/triple_buffer.rb c3db4307ea31eaeddc770fc2e5607ce084f9a2f1
-lib/rumesh/transformation_matrix.rb 739228aa64497a432e424b4108e308cc28b74566
+lib/rumesh/triple_buffer.rb ff29d2be7b5b736660440cfa2ab25ad616e65cdc
+lib/rumesh/transformation_matrix.rb 9f8f24c0a1a8c4ec0a47f72225ab70a0ae3e6ffa

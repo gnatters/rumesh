@@ -5,8 +5,6 @@ require 'rumesh/quick_index'
 
 class TripleBuffer
   
-  # maybe should be able to switch indexing on and off per buffer?
-  
   def initialize params
     # can be initialised from array
     # can be initialised from stream (from a file)
@@ -90,6 +88,10 @@ class TripleBuffer
         index << i
       end
     end
+  end
+  
+  def remove_index
+    @index = nil
   end
   
   def indexed?
