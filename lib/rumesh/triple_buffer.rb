@@ -397,6 +397,17 @@ class TripleBuffer
       index
     end
     
+    def index_leaves
+      build_index unless indexed?
+      
+      def leaves_rec hash
+        hashes, arrays = hash.values.partition { |x| x.class == Hash }
+        arrays.concat hashes.map { |h| leaves_rec(h) }.flatten(1)
+      end
+      
+      leaves_rec [@index]     
+    end
+    
 end
 
 class PointBuffer < TripleBuffer
@@ -628,6 +639,30 @@ class TriangleBuffer < TripleBuffer
       buffer.collect! { |v| olds.include?(v) ? new_value : v }
     end
     true
+  end
+  
+  # Find and remove any duplicate triangles
+  def ensure_uniqueness
+    b = buffer
+    #summary = buffer.to_a.map { |t| t << i += 1 }.sort!
+    summary = NArray.hcat(b, NArray[0...b.shape.last].reshape(1,b.shape.last)).to_a.sort!
+    
+    duplicates = []
+    matches = []
+    complete = false
+    
+    until complete do
+      (f = summary.shift) or (complete = true) # loop must run once more than there are items in summary
+      
+      if (f[2] == matches.last[2] && f[1] == matches.last[1] && f[0] == matches.last[0] rescue false)
+        matches << f
+      else
+        duplicates.concat (matches[1..-1].map(&:last) or [])
+        matches = [f]
+      end
+    end
+    remove_and_optimize duplicates
+    self
   end
   
   def remap index_map
