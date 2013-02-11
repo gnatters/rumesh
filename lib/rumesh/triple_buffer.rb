@@ -115,18 +115,14 @@ class TripleBuffer
       return false unless (found = find value)
       return found.map { |i| i - @empties.count { |e| e < i } }
     else
-      # revert to linear search if no index available
-      i = -1
-      @buffers.map do |buffer|
-        buffer.map do |item|
-          i+=1
-          if item == value
-            i - @empties.count { |e| e < i }
-          else
-            nil
-          end
-        end
-      end.flatten!.compact
+      # revert to linear search with NArray's methods if no index available
+      matches = []
+      @buffers.each do |buffer|
+        logical = buffer.eq(value).sum(0)
+        i = -1
+        logical.each {|m| i += 1; matches << i if m > 0}
+      end
+      return matches unless matches.empty?
     end
     false
   end
@@ -189,7 +185,7 @@ class TripleBuffer
     # determines the actual location of triples in case of empty spaces and/or extra NArrays
     # returns an array of [buffer, index] pairs
     
-    [*indices].flatten!.map do |i|
+    [*indices].flatten.map do |i|
       @empties.sort!.each { |e| i += 1 if e <= i }
       match = nil
       
@@ -207,7 +203,7 @@ class TripleBuffer
   def get *indices
     # returns nil for out of range indicies
     
-    [*indices].flatten!.map do |i|
+    [*indices].flatten.map do |i|
       @empties.sort!.each { |e| i += 1 if e <= i }
       got = nil
       @buffers.each do |buffer|
@@ -310,7 +306,7 @@ class TripleBuffer
     # updates the indicated triples to zero and adds them to the empties
     # returns array of boolean values indicating truth for each index that was found and removed
     
-    [*indices].flatten!.map do |i|
+    [*indices].flatten.map do |i|
       ii = i
       @empties.sort!.each { |e| i += 1 if e <= i }
       real_i = i
@@ -331,7 +327,7 @@ class TripleBuffer
   end
   
   def remove_and_optimize *indices
-    indices = QuickIndex.new [*indices].flatten!
+    indices = QuickIndex.new [*indices].flatten
     new_buffer = case @type
     when :float   then NArray.sfloat(3, size-indices.size)
     when :bfloat  then NArray.float(3, size-indices.size)
@@ -598,8 +594,6 @@ class VectorBuffer < PointBuffer
   end  
   
   def dot_prod i, other
-    #t = get(i).first
-    #[0]*other[0] + t[1]*other[1] + t[2] * other[2]
     NVector[get(i).first] * NVector[other]
   end
   
@@ -625,7 +619,7 @@ class TriangleBuffer < TripleBuffer
   
   def neighbors_of i
     # Returns the indices of all vertices which share an edge with vertex i
-    faces_with(i).flatten!.uniq! - [i]
+    faces_with(i).flatten.uniq! - [i]
   end
   
   def replace olds, new_value
