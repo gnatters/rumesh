@@ -50,4 +50,13 @@ class QuickIndex
   def size 
     @size
   end
+  
+  # @return (Array) of leaves of the index tree (which are Arrays of indices of the original Array).
+  def leaves
+    def leaves_rec hsh
+      hshs, arys = hsh.values.partition { |x| x.kind_of? Hash }
+      arys.concat hshs.map { |h| leaves_rec(h) }.flatten(1)
+    end
+    leaves_rec [@index]
+  end
 end

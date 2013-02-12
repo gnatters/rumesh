@@ -12,6 +12,7 @@ class Mesh
   attr_reader :vbuffer
   attr_reader :vnbuffer
   attr_reader :fbuffer
+  attr_reader :boundaries
   
   # Creates a new instance of Mesh
   # 
@@ -57,6 +58,15 @@ class Mesh
     Cuboid.new @vbuffer.buffer.min(1).to_a, @vbuffer.buffer.max(1).to_a
   end
 
+  # Calculates the 3D bounding box of the specified vertices of this mesh.
+  # 
+  # @return [Cuboid] defined by the most extreme specified vertices.
+  #
+  def subset_bounding_box *indices
+    subset = @vbuffer.nget([*indices].flatten)
+    Cuboid.new subset.min(1).to_a, subset.max(1).to_a
+  end
+
   # Calulates the center point of this mesh.
   #
   # @return [Array] containing three floating point numbers.
@@ -74,6 +84,24 @@ class Mesh
   def transform! *ms
     m = [*ms].flatten.reverse.inject(:*)
     @vbuffer.each_triple_with_index do |t,i|
+      q = m * NMatrix[[t[0]],[t[1]],[t[2]],[1]]
+      @vbuffer[i] = [q[0]/q[3], q[1]/q[3], q[2]/q[3]]
+    end
+    self
+  end
+
+  # Like _transfrom!_ but only applies the transformation(s) to the specified vertices.
+  # 
+  # @param indices [Array] specifies which indicies to apply the transformation(s) to.
+  # @param *ms [NMatrix] the transformation matrices to be applied (in order of desired effect).
+  # 
+  # @return [self]
+  #
+  def subset_transform! indices, *ms
+    indices = QuickIndex.new indices
+    m = [*ms].flatten.reverse.inject(:*)
+    @vbuffer.each_triple_with_index do |t,i|
+      next unless indices.include? i 
       q = m * NMatrix[[t[0]],[t[1]],[t[2]],[1]]
       @vbuffer[i] = [q[0]/q[3], q[1]/q[3], q[2]/q[3]]
     end
@@ -173,7 +201,44 @@ class Mesh
     @vbuffer.remove_and_optimize secondaries
     @vnbuffer.remove_and_optimize secondaries
     @fbuffer.remap index_map
+    [@vbuffer, @vnbuffer, @fbuffer].each { |b| b.build_index }
     self
+  end
+  
+  
+  # Build an index of boundary vertices, unconnected boundaries are indexed seperately.
+  # Boundary vertices are detected as they are edges which are only represented in a single face
+  def find_boundaries
+    @fbuffer.ensure_uniqueness
+    
+    @boundaries = []
+    boundary_edges = []
+    
+    @vbuffer.each_index do |i|
+      # boundary vertices have identifiable as they have two or more neighboring vertices which are 
+      #  only included in one face which includes this vertex.
+      n_counts = (@fbuffer.faces_with(i).flatten - [i]).inject({}) { |hsh,id| hsh[id] = hsh[id] ? hsh[id] + 1 : 1 ; hsh }
+      n_counts.each { |n,count| boundary_edges << (i<n ? [i,n] : [n,i]) if count == 1 }
+    end
+    boundary_edges.uniq!.flatten!
+    
+    partial_boundary = []
+    
+    # keep starting new boundaries until there are no boundary edges left to start with
+    until boundary_edges.empty? do
+      partial_boundary = [boundary_edges.shift, boundary_edges.shift]
+      
+      # until current partial boundary forms a closed loop
+      until partial_boundary.first == partial_boundary.last
+        # pick the first potential next edge and add it to the current partial boundary... should it choose an edge more systematically???
+        next_e = boundary_edges.slice!( (boundary_edges.index(partial_boundary.last)/2)*2, 2 ) # this will error out (due to index returning nil) to avoid looping infinitely in case of funny data
+        partial_boundary << ( partial_boundary.last == next_e.first ? next_e.last : next_e.first )
+      end
+      
+      @boundaries << partial_boundary[0...-1]
+      partial_boundary = []
+    end
+    @boundaries
   end
   
   private

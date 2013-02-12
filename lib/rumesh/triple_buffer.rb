@@ -220,7 +220,7 @@ class TripleBuffer
   def nget *indices
     # Will cause error if indices are out of range
     optimize
-    m.buffers.last.buffer[[0..2], [*indices]]
+    buffer[[0..2], [*indices]]
   end
   
   def update triples_hash
@@ -367,6 +367,11 @@ class TripleBuffer
   
   def optimal?
     @buffers.size == 1 && @empties == []
+  end
+  
+  def in_range? *indices
+    max = size
+    [*indices].flatten.map {|i| i >= 0 && i < size}
   end
   
   private
@@ -657,7 +662,7 @@ class TriangleBuffer < TripleBuffer
       if (f[2] == matches.last[2] && f[1] == matches.last[1] && f[0] == matches.last[0] rescue false)
         matches << f
       else
-        duplicates.concat (matches[1..-1].map(&:last) or [])
+        duplicates.concat(( matches[1..-1].map(&:last) rescue Array.new ))
         matches = [f]
       end
     end
