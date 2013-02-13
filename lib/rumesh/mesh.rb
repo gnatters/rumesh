@@ -12,7 +12,6 @@ class Mesh
   attr_reader :vbuffer
   attr_reader :vnbuffer
   attr_reader :fbuffer
-  attr_reader :boundaries
   
   # Creates a new instance of Mesh
   # 
@@ -204,41 +203,48 @@ class Mesh
     [@vbuffer, @vnbuffer, @fbuffer].each { |b| b.build_index }
     self
   end
-  
-  
-  # Build an index of boundary vertices, unconnected boundaries are indexed seperately.
-  # Boundary vertices are detected as they are edges which are only represented in a single face
-  def find_boundaries
-    @fbuffer.ensure_uniqueness
+
+  def intersects_with? other
+    return false unless bounding_box.intersects? other.bounding_box
+    verts = ( nget(ownb).to_a.map         { |t| t << 0 } + 
+              other.nget(otherb).to_a.map { |t| t << 1 } ).sort!
     
-    @boundaries = []
-    boundary_edges = []
-    
-    @vbuffer.each_index do |i|
-      # boundary vertices have identifiable as they have two or more neighboring vertices which are 
-      #  only included in one face which includes this vertex.
-      n_counts = (@fbuffer.faces_with(i).flatten - [i]).inject({}) { |hsh,id| hsh[id] = hsh[id] ? hsh[id] + 1 : 1 ; hsh }
-      n_counts.each { |n,count| boundary_edges << (i<n ? [i,n] : [n,i]) if count == 1 }
-    end
-    boundary_edges.uniq!.flatten!
-    
-    partial_boundary = []
-    
-    # keep starting new boundaries until there are no boundary edges left to start with
-    until boundary_edges.empty? do
-      partial_boundary = [boundary_edges.shift, boundary_edges.shift]
-      
-      # until current partial boundary forms a closed loop
-      until partial_boundary.first == partial_boundary.last
-        # pick the first potential next edge and add it to the current partial boundary... should it choose an edge more systematically???
-        next_e = boundary_edges.slice!( (boundary_edges.index(partial_boundary.last)/2)*2, 2 ) # this will error out (due to index returning nil) to avoid looping infinitely in case of funny data
-        partial_boundary << ( partial_boundary.last == next_e.first ? next_e.last : next_e.first )
+    prev = nil
+    until verts.empty?
+      v = verts.shift
+      if (v[3] > prev[3] && v[2] == prev[2] && v[1] == prev[1] && v[0] == prev[0] rescue false)
+        return true
+      else
+        prev = v
       end
-      
-      @boundaries << partial_boundary[0...-1]
-      partial_boundary = []
     end
-    @boundaries
+    
+    false
+  end
+  
+  def intersection other
+    # identify the vertices in both this mesh and the other one, or return false
+    
+    return false unless bounding_box.intersects? other.bounding_box
+    
+    i = j = -1
+    verts = ( nget(ownb).to_a.map         { |t| t.concat [0, i += 1] } + 
+              other.nget(otherb).to_a.map { |t| t.concat [1, j += 1] } ).sort!
+    
+    prev = nil
+    until verts.empty?
+      v = verts.shift
+      if (v[3] > prev[3] && v[2] == prev[2] && v[1] == prev[1] && v[0] == prev[0] rescue false)
+        # this will only be true when prev is from ownb and v is from otherb
+        
+        prev[4]
+        prev = nil
+      else
+        prev = v
+      end
+    end
+    
+    
   end
   
   private

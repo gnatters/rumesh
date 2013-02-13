@@ -1,3 +1,5 @@
+require 'nifti'
+
 class Volume
   
   attr_accessor :image
