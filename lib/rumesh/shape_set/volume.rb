@@ -2,306 +2,221 @@ require 'nifti'
 
 class Volume
   
-  attr_accessor :image
   attr_accessor :header
+  attr_accessor :image
   attr_accessor :labels
   
-  def initialize(source, labels={})
+  def initialize(input_file, labels={}, cast_to_int=true)
     
-    labels_included = false
-    if File.exists? source
-      if source.end_with? ".nii"
-        load_nifti_file source
-      elsif source.end_with? ".bin"
-        labels_included = load_bin_file source
+    @filename = input_file.scan(/\A.*\/(.*)\.nii\z/).first.first.gsub(/\s/,"_")
+    @meshes = {}
+    
+    if File.exists? input_file
+      if input_file.end_with? ".nii"
+        @header, @dims, @image = load_nifti(input_file)
+        @image = @image.to_i if cast_to_int
+        @labels = if labels.kind_of? String
+          load_labels labels
+        elsif labels.kind_of? Hash
+          Hash[labels.map { |k,v| [k,v] }]
+        end
+        complete_labels
+      elsif input_file.end_with? ".bin"
+        @header, @dims, @labels, @image = load_bin(input_file)
+        @image = @image.to_i if cast_to_int
+        complete_labels
       else
-        throw "unrecognised format #{source.split(".").last}"
+        raise ArgumentError, "Unrecognised file format: #{input_file.split(".").last}"
       end
     else
-      throw "File not found: #{source}"
+      raise ArgumentError, "Input file not found: #{input_file}"
     end
     
-    @dims = @header["dim"][1..@header["dim"][0]]
-    @image.reshape! *@dims
-    
-    @offset = [0,0,0]
-    @meshes = Hash.new
-    
-    @labels = Hash[labels.map {|k, v| [k, v.gsub(/\s/, "_")] }] unless labels_included
-    self.check_labels
   end
   
   def dim
     @image.dim
   end
   
-  def reshape= *d
-    @image.reshape!(*d) and @dims = d
+  def uniq
+    values = {}
+    @image.each { |n| values[n] = true }
+    values.keys
   end
   
-  def cubic_label_surf output_dir
-    output_dir += "/" unless output_dir[-1] == "/"
-    x_,y_,z_ = @dims
-    
-    z_.times do |z|
-      y_.times do |y|
-        x_.times do |x|
-          current  = get(x,y,z)
-          previous = get(x-1,y,z)
-          above    = get(x,y-1,z)
-          behind   = get(x,y,z-1)
-          
-          surfaces = []
-          
-          if x != 0 and current != previous
-            surfaces << Hash.new
-            surfaces[-1][:labels]   = [previous, current]
-            surfaces[-1][:vertices] = [[x,y,z],
-                                       [x,y+1,z],
-                                       [x,y+1,z+1],
-                                       [x,y,z+1]].map { |v| Vertex.new v }
-            surfaces[-1][:normal]   = [1,0,0]
-          end
-          if y != 0 and current != above
-            surfaces << Hash.new
-            surfaces[-1][:labels]   = [above, current]
-            surfaces[-1][:vertices] = [[x,y,z+1],
-                                       [x+1,y,z+1],
-                                       [x+1,y,z],                                       
-                                       [x,y,z]].map { |v| Vertex.new v }
-            surfaces[-1][:normal]   = [0,1,0]
-          end
-          if z != 0 and current != behind
-            surfaces << Hash.new
-            surfaces[-1][:labels]   = [behind, current]
-            surfaces[-1][:vertices] = [[x,y,z],
-                                       [x+1,y,z],
-                                       [x+1,y+1,z],
-                                       [x,y+1,z]].map { |v| Vertex.new v }
-            surfaces[-1][:normal]   = [0,0,1]
-          end          
-          
-          unless surfaces.empty?
-            surfaces.each do |s|
-              init_mesh s[:labels], output_dir unless @meshes.has_key? labels_to_id(s[:labels])
-              write_square *s[:vertices], s[:normal], s[:labels]
-            end
-          end
-        end
-      end
-    end
-    
-    finalize_meshes
-  end
-    
-  def to_coords i
+  def coords_of i
     z = i/(@dims[0]*@dims[1])
     y = (i-z*@dims[0]*@dims[1])/@dims[0]
     x = i-z*@dims[0]*@dims[1]-y*@dims[0]
     [x,y,z]
   end
-  
-  def to_i x, y, z
+ 
+  def index_of x, y, z
     x + y*@dims[0] + z*@dims[0]*@dims[1]
   end
-  
-  def get x,y,z 
-    @image[self.to_i(x,y,z)]
-  end
-  
-  def set x,y,z,v
-    @image[self.to_i(x,y,z)] = v
-  end
-  
-  def [](i)
-    @image[i]
-  end
-
-  def []=(i,n)
-    @image[i] = n
-  end
-  
+ 
   def each &block
     @image.size.times { |i| yield @image[i] }
   end
-  
+ 
   def each_with_index &block
     @image.size.times { |i| yield @image[i], i }
   end
   
-  def check_labels
-    encountered = {}
-    self.each { |n| encountered[n] = true }
-    encountered = encountered.keys
+  def cubic_label_surf output_dir
+    output_dir += "/" unless output_dir[-1] == "/"
+    present = nil
     
-    if @labels.keys.include? :first
-      @labels.delete(:first) unless (encountered - @labels.keys).size > 1
-      # assign @labels[:first] to the first unlabeled value
-      encountered.each do |n|
-        next if n == 0
-        unless @labels.has_key? n
-          @labels[n] = @labels[:first]
-          @labels.delete(:first)
-          break
+    @dims[2].times do |z|
+      @dims[1].times do |y|
+        @dims[0].times do |x|
+          
+          previous = present || @image[index_of(x-1,y,z)]
+          present  = @image[index_of(x,y,z)]
+          above    = @image[index_of(x,y-1,z)]
+          behind   = @image[index_of(x,y,z-1)]
+          
+          surfaces = []
+          
+          surfaces << Hash[
+            labels:   [ previous, present ],
+            vertices: [ [ x, y,   z   ],
+                        [ x, y+1, z   ],
+                        [ x, y+1, z+1 ],                                       
+                        [ x, y,   z+1 ] ],
+            normal:   [ 1, 0, 0 ]
+          ] if x != 0 and present != previous
+          
+          surfaces << Hash[
+            labels:   [ above, present ],
+            vertices: [ [ x,   y, z+1 ],
+                        [ x+1, y, z+1 ],
+                        [ x+1, y, z   ],                                       
+                        [ x,   y, z   ] ],
+            normal:   [ 0, 1, 0 ]
+          ] if y != 0 and present != above
+          
+          surfaces << Hash[
+            labels:   [ behind, present ],
+            vertices: [ [ x,   y,   z ],
+                        [ x+1, y,   z ],
+                        [ x+1, y+1, z ],                                       
+                        [ x,   y+1, z ] ],
+            normal:   [ 0, 0, 1 ]
+          ] if z != 0 and present != behind
+                    
+          surfaces.each do |s|
+            unless @meshes.has_key? (mesh_id = s[:labels].sort.join("-"))
+              file_path = output_dir + "#{mesh_id}.stl"
+              File.open(file_path, 'w') { |f| f.write "solid voxel_surface" }
+              @meshes[mesh_id] = file_path
+            end
+            write_square *s[:vertices], s[:normal], s[:labels]
+          end
+          
         end
       end
     end
     
-    # throw an error if there's an empty label
-    @labels.each { |n,label| throw "EMPTY LABEL: #{[n,label]}: #{encountered}" unless encountered.include? n}
-    
-    encountered.each do |n|
-      unless @labels.keys.include?(n) or n == 0
-        @labels[n] = "label_#{n}"
-      end
+    @meshes.keys.each do |id|
+      File.open(@meshes.delete(id), 'a') { |f| f.write "\nendsolid" }
     end
   end
   
-  def next_label
-    found = nil
-    nl = 1
-    until found
-      found = nl unless @labels.keys.include? nl
-      nl += 1
+  def get_value_stats
+    label_stats = Hash.new {|h,k|  h[k] = {:count => 0, :xmin => 100000, :xmax => -100000, :ymin => 100000, :ymax => -100000, :zmin => 100000, :zmax => -100000 }}
+    self.each_with_index do |v, i|
+      x,y,z = coords_of i
+      label_stats[v][:count] += 1
+      label_stats[v][:xmin] = x if x < label_stats[v][:xmin]
+      label_stats[v][:xmax] = x if x > label_stats[v][:xmax]
+      label_stats[v][:ymin] = y if y < label_stats[v][:ymin]
+      label_stats[v][:ymax] = y if y > label_stats[v][:ymax]
+      label_stats[v][:zmin] = z if z < label_stats[v][:ymin]
+      label_stats[v][:zmax] = z if z > label_stats[v][:ymax]
     end
-    found
-  end
-  
-  def get_label_stats
-    @label_stats = Hash.new {|h,k|  h[k] = {:count => 0, :xmin => 10000, :xmax => -10000, :ymin => 10000, :ymax => -10000, :zmin => 10000, :zmax => -10000 }}
-    self.each_with_index do |n, i|
-      @label_stats[n][:count] += 1
-      x,y,z = to_coords i
-      @label_stats[n][:xmin] = [@label_stats[n][:xmin], x].min
-      @label_stats[n][:xmax] = [@label_stats[n][:xmax], x].max
-      @label_stats[n][:ymin] = [@label_stats[n][:ymin], y].min
-      @label_stats[n][:ymax] = [@label_stats[n][:ymax], y].max
-      @label_stats[n][:zmin] = [@label_stats[n][:zmin], z].min
-      @label_stats[n][:zmax] = [@label_stats[n][:zmax], z].max
-    end
-    @label_stats
+    label_stats
   end
   
   def merge! other
     """create a third volume including all the labeled areas defined by the other_volume overlayed onto this one"""
     throw "Cannot merge volumes with different dimensions!" unless self.dim == other.dim
-    new_labels_map = {}
-    overwritten_values = {}
     
-    other.each_with_index do |n, i|
-      next if n == 0
-      combo = "#{self[i]}-#{n}"
-      if new_labels_map.has_key? combo
-        l = new_labels_map[combo]
+    available_values = (0...256).to_a - uniq
+    new_values_map = {}
+    
+    other.each_with_index do |v, i|
+      next if v == 0
+      combo = "#{@image[i]}-#{v}"
+      new_values_map[combo] = available_values.shift unless new_values_map.has_key? combo
+      @image[i] = new_values_map[combo]
+    end
+    
+    new_values_map.each do |combo, value|
+      own_v, other_v = combo.split("-").map(&:to_i)
+      if own_v == 0
+        @labels[value] = [other.labels[other_v]].flatten
       else
-        l = new_labels_map[combo] = next_label
-        if self[i] == 0
-          @labels[l] = other.labels[n]
-        else
-          @labels[l] = "#{@labels[self[i]]}-#{other.labels[n]}"
-          overwritten_values[self[i]] = :overwritten
-        end
+        @labels[value] = @labels[own_v].concat(other.labels[other_v]).uniq
       end
-      
-      self[i] = l
+    end
+    complete_labels # this should just remove any empty labels from fully overwritten values
+    self
+  end
+  
+  def clean_up_messy_voxels
+    # Sometimes a few voxels overlap where they shouldn't it's better just to undo overlap labels that looks like this
+    # should be called after every merge!
+    overlap_values = @labels.select { |v,l| l.size > 1 }.keys
+    
+    get_value_stats.each do |v, stats|
+      if ( overlap_values.include? v &&
+           stats[:count] < 50 && 
+           ( (stats[:xmax]-stats[:xmin]) < 2 ||
+             (stats[:ymax]-stats[:ymin]) < 2 ||
+             (stats[:zmax]-stats[:zmin]) < 2 ) &&
+           @labels.has_value?(@labels[v][0...-1]) )
+        
+        old_value = @labels.key(@labels[v][0...-1])
+        @image.collext! { |x| x == v ? x = old_value : x }
+      end
     end
     
-    # if a previous label was enitrely subsumed by adding this new one then remove it
-    encountered = {}
-    self.each { |n| encountered[n] = true }
-    
-    overwritten_values.keys.each do |overwritten_value|
-      @labels.delete overwritten_value unless encountered.keys.include? overwritten_value
-    end
-
-    # the rest of this function removes very small overlaps (apparently due to some kind of error) between labels
-    # => by reuniting them with the original label
-    self.get_label_stats
-    
-    @label_stats.each do |n, stats|
-      if stats[:count] < 50 and 
-        ((stats[:xmax]-stats[:xmin]) < 2 or
-          (stats[:ymax]-stats[:ymin]) < 2 or
-            (stats[:zmax]-stats[:zmin]) < 2)
-        # if this label is the overlap of an existing label and a new one, then assign it to the existing label
-        label = @labels[n]
-        if label and label.split("-").size > 1
-          old_label = label.split("-")[0...-1].join("-")
-          if @labels.values.include? old_label
-            old_n = @labels.select {|k,v| v==old_label}.keys.first
-            self.each_with_index { |nn, i| self[i] = old_n if nn == n }
-            @labels.delete n
-          end
-        end
-      end
-    end    
+    complete_labels # remove labels for removed values
   end
     
-  def to_bin
-    header = YAML::dump @header
-    labels = YAML::dump @labels
-    image = @image.to_a.flatten.pack("C*")
-    header+"//end header//\n"+labels+"//end labels//\n"+image
+  def write_bin_file output_path
+    File.open(output_path,'w') do |f|
+      f.write YAML::dump(@header) << "//end header//\n" << YAML::dump(@labels) << "//end labels//\n" << @image.to_a.flatten.pack("C*")
+    end
   end
   
   private
-    def labels_to_id labels
-      labels.sort.join("-")
-    end
-   
-    def init_mesh labels, output_dir
-      mesh_id = labels_to_id labels
-      file_path = output_dir + "#{mesh_id}.stl"
-      File.open(file_path, 'w') { |f| f.write "solid ascii" }
-      @meshes[mesh_id] = file_path
-    end
-   
-    def finalize_meshes
-      @meshes.keys.each do |id|
-        File.open(@meshes.delete(id), 'a') { |f| f.write "\nendsolid" }
-      end
-    end
-    
-    def write_triangle_strip
-      # can write a triangle or a square ;D
-    end
-    
+      
     def write_square a,b,c,d,n,labels
       if labels.first > labels.last
-        stl_string = "
-    facet normal #{n.join(" ")}
-     outer loop
-      #{a.to_stl}
-      #{b.to_stl}
-      #{c.to_stl}
-     endloop
-    endfacet
-    facet normal #{n.join(" ")}
-     outer loop
-      #{c.to_stl}
-      #{d.to_stl}
-      #{a.to_stl}
-     endloop
-    endfacet"
+        t1 = [a,b,c]
+        t2 = [c,d,a]
       else
-        stl_string = "
-    facet normal #{n.map{|x| -x}.join(" ")}
+        n.map! {|x| -x}
+        t1 = [a,c,b]
+        t2 = [c,a,d]
+      end
+      mesh_id = labels.sort.join("-")
+      
+      File.open(@meshes[mesh_id], 'a') do |f| 
+        f.write "
+    facet normal #{n.join(" ")}
      outer loop
-      #{a.to_stl}
-      #{c.to_stl}
-      #{b.to_stl}
+      #{ t1.map { |v| "vertex #{v[0].round(6)} #{v[1].round(6)} #{v[2].round(6)}" }.join("\n      ") }
      endloop
     endfacet
-    facet normal #{n.map{|x| -x}.join(" ")}
+    facet normal #{n.join(" ")}
      outer loop
-      #{c.to_stl}
-      #{a.to_stl}
-      #{d.to_stl}
+      #{ t2.map { |v| "vertex #{v[0].round(6)} #{v[1].round(6)} #{v[2].round(6)}" }.join("\n      ") }
      endloop
     endfacet"
-     end
-     mesh_id = labels_to_id labels
-     File.open(@meshes[mesh_id], 'a') { |f| f.write stl_string }
+      end     
     end
     
     def write_fine_square a,b,c,d,n,labels
@@ -330,15 +245,53 @@ class Volume
 
     def load_bin_file bin_path
       header, labels, image = File.open(bin_path, "r").read.split(/\/\/end \w{6}\/\/\n/, 3)
-      @header = YAML::load header
-      @labels = YAML::load labels
-      @image = NArray.to_na(image.unpack("C*")).to_i
+      header = YAML::load header
+      dims = header["dim"][1..header["dim"][0]]
+      labels = YAML::load labels
+      image = NArray.to_na(image.unpack("C*")).reshape! *dims
+      [ header, dims, labels, image ]
     end
     
-    def load_nifti_file nifti_path
-      nifti = NIFTI::NObject.new(nifti_path)
-      @header = nifti.header
-      @image = NArray.to_na(nifti.get_image).to_i
+    def load_nifti nifti_path
+      nifti = NIFTI::NObject.new nifti_path
+      header = nifti.header
+      dims = header["dim"][1..header["dim"][0]]
+      image = NArray.to_na(nifti.get_image).reshape! *dims
+      [ header, dims, image ]
     end
     
+    # really need to document this one!!!
+    # labels may not contain the '+' character 
+    # invalid labels in the label file will simply be ignored
+    def load_labels labels_path, check_header=true
+      labels = Hash.new
+      volume_name = ( check_header ? true : nil)
+      
+      File.open(input, 'r').each_line do |line|
+        next if line =~ /^\s*(#(.)*)?$/ # ignore empty or commented lines
+        raise ArgumentError, "Label file lacks appropriate header." unless volume_name or (volume_name = line.scan(/labels_for (.*)\.nii/).first.first)
+        
+        if line.scan(/\s*(\d+)\s+([0-9a-zA-z\s\.\*\-,]+)\#?/).first
+          value, label = $1, $2
+          labels[value] = label.strip.squeeze(" ").gsub("\s")
+        end
+      end
+      
+      labels
+    end
+    
+    def complete_labels
+      all_values = uniq
+      all_values.delete(0)
+      
+      @labels ||= {}
+      @labels.reject! { |v,l| !all_values.include? v }
+      
+      if all_values.length == 1 and @labels.empty?
+        @labels[all_values.first] = [@filename]
+      else
+        all_values.select { |v| !@labels[v] }.each { |v| @labels[v] = ["#{@filename}=>#{v}"] }
+      end
+      @labels
+    end
 end
