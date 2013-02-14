@@ -29,8 +29,8 @@ module MeshLabServer
   end
   
   def self.run script_location, input_file, output_file
-    if @@exec_dir and @@exec_dir != Dir.pwd
-      output = Open3.capture3("cd #{@@exec_dir}; #{@@mls_path} -i #{input_file} -s #{script_location} -o #{output_file}")
+    if @@exec_dir
+      Open3.capture3("cd #{@@exec_dir}; #{@@mls_path} -i #{input_file} -s #{script_location} -o #{output_file}")
     else
       Open3.capture3("#{@@mls_path} -i #{input_file} -s #{script_location} -o #{output_file}")
     end
