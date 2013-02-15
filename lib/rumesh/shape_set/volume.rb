@@ -64,7 +64,7 @@ class Volume
     @image.size.times { |i| yield @image[i], i }
   end
   
-  def cubic_label_surf output_dir
+  def build_label_surfaces output_dir
     output_dir += "/" unless output_dir[-1] == "/"
     present = nil
     
@@ -79,32 +79,32 @@ class Volume
           
           surfaces = []
           
-          surfaces << Hash[
-            labels:   [ previous, present ],
-            vertices: [ [ x, y,   z   ],
-                        [ x, y+1, z   ],
-                        [ x, y+1, z+1 ],                                       
-                        [ x, y,   z+1 ] ],
-            normal:   [ 1, 0, 0 ]
-          ] if x != 0 and present != previous
+          surfaces << {
+            :labels   =>  [ previous, present ],
+            :vertices =>  [ [ x, y,   z   ],
+                            [ x, y+1, z   ],
+                            [ x, y+1, z+1 ],                                       
+                            [ x, y,   z+1 ] ],
+            :normal   =>  [ 1, 0, 0 ]
+          } if x != 0 and present != previous
           
-          surfaces << Hash[
-            labels:   [ above, present ],
-            vertices: [ [ x,   y, z+1 ],
-                        [ x+1, y, z+1 ],
-                        [ x+1, y, z   ],                                       
-                        [ x,   y, z   ] ],
-            normal:   [ 0, 1, 0 ]
-          ] if y != 0 and present != above
+          surfaces << {
+            :labels   =>  [ above, present ],
+            :vertices =>  [ [ x,   y, z+1 ],
+                            [ x+1, y, z+1 ],
+                            [ x+1, y, z   ],                                       
+                            [ x,   y, z   ] ],
+            :normal   =>  [ 0, 1, 0 ]
+          } if y != 0 and present != above
           
-          surfaces << Hash[
-            labels:   [ behind, present ],
-            vertices: [ [ x,   y,   z ],
-                        [ x+1, y,   z ],
-                        [ x+1, y+1, z ],                                       
-                        [ x,   y+1, z ] ],
-            normal:   [ 0, 0, 1 ]
-          ] if z != 0 and present != behind
+          surfaces << {
+            :labels   =>  [ behind, present ],
+            :vertices =>  [ [ x,   y,   z ],
+                            [ x+1, y,   z ],
+                            [ x+1, y+1, z ],                                       
+                            [ x,   y+1, z ] ],
+            :normal   =>  [ 0, 0, 1 ]
+          } if z != 0 and present != behind
                     
           surfaces.each do |s|
             unless @meshes.has_key? (mesh_id = s[:labels].sort.join("-"))
@@ -186,7 +186,7 @@ class Volume
     complete_labels # remove labels for removed values
   end
     
-  def write_bin_file output_path
+  def write_serial_file output_path
     File.open(output_path,'w') do |f|
       f.write YAML::dump(@header) << "//end header//\n" << YAML::dump(@labels) << "//end labels//\n" << @image.to_a.flatten.pack("C*")
     end
