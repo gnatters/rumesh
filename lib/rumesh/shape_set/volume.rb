@@ -1,3 +1,4 @@
+require 'yaml'
 require 'nifti'
 
 class Volume
@@ -6,13 +7,13 @@ class Volume
   attr_accessor :image
   attr_accessor :labels
   
-  def initialize(input_file, labels={}, cast_to_int=true)
-    
-    @filename = input_file.scan(/\A.*\/(.*)\.nii\z/).first.first.gsub(/\s/,"_")
+  # type =: :auto, :nii, :bin
+  def initialize(input_file, labels={}, type=:auto, cast_to_int=true)
+    @filename = input_file.scan(/\A(.*\/)?(.*)\.(bin|nii)\z/)[0][1].gsub(/\s/,"_")
     @meshes = {}
     
     if File.exists? input_file
-      if input_file.end_with? ".nii"
+      if type==:nii or type==:auto and input_file.end_with? ".nii"
         @header, @dims, @image = load_nifti(input_file)
         @image = @image.to_i if cast_to_int
         @labels = if labels.kind_of? String
@@ -21,7 +22,7 @@ class Volume
           Hash[labels.map { |k,v| [k,v] }]
         end
         complete_labels
-      elsif input_file.end_with? ".bin"
+      elsif type==:bin or type==:auto and input_file.end_with? ".bin"
         @header, @dims, @labels, @image = load_bin(input_file)
         @image = @image.to_i if cast_to_int
         complete_labels
@@ -243,7 +244,7 @@ class Volume
       write_square(cc,bcc,c,ccd,n,labels)
     end
 
-    def load_bin_file bin_path
+    def load_bin bin_path
       header, labels, image = File.open(bin_path, "r").read.split(/\/\/end \w{6}\/\/\n/, 3)
       header = YAML::load header
       dims = header["dim"][1..header["dim"][0]]
