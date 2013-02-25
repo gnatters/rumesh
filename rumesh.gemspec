@@ -10,5 +10,6 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/gnatters/rumesh'
   s.add_runtime_dependency "narray", [">= 0.6.0.7", "< 0.7.0"]
   s.add_runtime_dependency "nifti"
+  s.add_runtime_dependency "json"
   s.add_development_dependency "rspec"
 end

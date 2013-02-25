@@ -6,6 +6,12 @@ module MeshLabServer
   @@exec_dir = nil
   @@mls_path = nil
   
+  def self.setup mls_path, exec_dir = nil
+    @@mls_path = mls_path
+    @@exec_dir = exec_dir
+    self
+  end
+  
   def self.exec_dir
     @@exec_dir
   end
@@ -24,7 +30,7 @@ module MeshLabServer
   
   def self.write_new_script name, output_dir, type, params={}
     output_path = "#{output_dir}/#{name.to_s}.mlx"
-    File.open(output_path, 'w') { |f| MeshLabServer::ScriptTemplates.compose type, params }
+    File.open(output_path, 'w') { |f| f.write MeshLabServer::ScriptTemplates.compose type, params }
     output_path
   end
   
@@ -45,19 +51,19 @@ module MeshLabServer::ScriptTemplates
   @@script_footer = "\n</FilterScript>"
   
   def self.compose type, params
-    script = @@script_header
+    script = @@script_header.clone
     raise ArgumentError, "unknown script type: #{type}" unless ScriptTemplates[type]
     ScriptTemplates[type].each do |s|
       if s.kind_of? String
         script << s
       elsif s.kind_of? Symbol
         if params[s]
-          script << params[s]
+          script << params[s].to_s
         else
           raise ArgumentError, "missing required paramter: #{s} for type: #{type}"
         end
       elsif s.kind_of? Array
-        script << (params[s[0]] or s[1])
+        script << (params[s[0]] or s[1]).to_s
       end
     end
     script << @@script_footer
@@ -97,10 +103,10 @@ module MeshLabServer::ScriptTemplates
       @@script_templates ||= Hash[
         merge_close_vertices: ["
   <filter name=\"Merge Close Vertices\">
-    <Param type=\"RichAbsPerc\" value=\"0\" min=\"0\" name=\"Threshold\" max=\"",[:max,0.3],"\"/>
+    <Param type=\"RichAbsPerc\" value=\"",[:value,0.008],"\" min=\"",[:min,0],"\" name=\"Threshold\" max=\"",[:max,0.8],"\"/>
   </filter>"
         ],
-        apply_smoothing: ["
+        taubin_laplacian_smoothing: ["
   <filter name=\"Taubin Smooth\">
    <Param type=\"RichFloat\" value=\"",[:taubin_lambda,0.5],"\" name=\"lambda\"/>
    <Param type=\"RichFloat\" value=\"",[:taubin_mu,-0.53],"\" name=\"mu\"/>
@@ -133,7 +139,7 @@ module MeshLabServer::ScriptTemplates
   <filter name=\"Delete Selected Faces\"/>
   <filter name=\"Remove Unreferenced Vertex\"/>"
         ],
-        apply_decimation: ["
+        qec_decimation: ["
   <filter name=\"Quadric Edge Collapse Decimation\">
    <Param type=\"RichInt\" value=\"", :TargetFaceNum, "\" name=\"TargetFaceNum\"/>
    <Param type=\"RichFloat\" value=\"",[:TargetPerc,0],"\" name=\"TargetPerc\"/>

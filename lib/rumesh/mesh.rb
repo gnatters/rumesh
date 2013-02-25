@@ -7,6 +7,7 @@
 require 'rumesh/triple_buffer'
 require 'rumesh/cuboid'
 
+
 class Mesh
   
   attr_reader :vbuffer
@@ -106,6 +107,19 @@ class Mesh
     end
     self
   end
+  
+  # Merges the vertices and faces of the given other mesh(es) into this one
+  def boundary_merge! *other_meshes
+    other_meshes = [*other_meshes].flatten
+    
+    other_meshes.each do |variable|
+      
+      
+      
+    end
+    
+    
+  end
 
   # Writes this mesh to an Wavefront .obj file
   # 
@@ -203,7 +217,7 @@ class Mesh
     [@vbuffer, @vnbuffer, @fbuffer].each { |b| b.build_index }
     self
   end
-
+    
   def intersects_with? other
     return false unless bounding_box.intersects? other.bounding_box
     verts = ( nget(ownb).to_a.map         { |t| t << 0 } + 
@@ -279,7 +293,7 @@ class Mesh
     
     @vbuffer  = VertexBuffer.new    :array => vertices
     @vnbuffer = VectorBuffer.new    :array => vertex_normals
-    @fbuffer  = TriangleBuffer.new  :array => faces
+    @fbuffer  = TriangleBuffer.new  :array => faces, :big => true
   end
   
   def load_stl input, calculate_missing_normals = true, optimize = true
@@ -309,7 +323,7 @@ class Mesh
     input.each_line do |line|
       case state
       when nil
-        if line.scan(/^\s*solid (.*)/)
+        if line.scan(/^\s*solid (.*)/).first
           @name = $1
           state = :solid
           next

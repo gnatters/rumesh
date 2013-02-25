@@ -41,7 +41,61 @@ module ShapeSet::Mesh
     @boundaries
   end
   
-  def boundary_vertices
+  def native_squares_of_vertex v, squares = []
+    faces = @fbuffer.faces_with2(v)
+    square_refs = []
+    
+    # find squares from this mesh where the hypotenuse edge converges on vertex v
+    face_ids = faces.keys
+    loop do
+      break unless (fid1 = face_ids.shift)
+      next unless (face = faces[fid1])
+      face_ids.each do |fid2|
+        next unless (shared_verts = (faces[fid2] & face)).count == 2 && @vbuffer.distance_between(*shared_verts).between?(1.4, 1.42)
+        #existing_sqr = squares.each_with_index.map {|sqr,i| i if (sqr[:faces] & [fid1,fid2]).count==2 }.compact.first
+        existing_sqr = squares.inject(0) { |i,sqr| break i if (sqr[:faces] & [fid1,fid2]).count==2; i+1 }
+        if existing_sqr then
+          square_refs << existing_sqr
+        else
+          square_refs << squares.length
+          squares << { faces: [fid1,fid2] }
+        end
+        faces.delete fid1
+        faces.delete fid2
+        break 
+      end
+    end
+    
+    # find remaining squares from this mesh
+    faces.to_a.each do |fid, face|
+      # identify non-right angle vertices of face assuming that the hypotonuse length is √2
+      hyp_verts = if @vbuffer.distance_between(face[0],face[1]).between?(1.4, 1.42) then [face[0],face[1]]
+      elsif @vbuffer.distance_between(face[1],face[2]).between?(1.4, 1.42) then [face[1],face[2]]
+      elsif @vbuffer.distance_between(face[2],face[0]).between?(1.4, 1.42) then [face[2],face[0]]
+      else
+        @fbuffer.get(fid).first.combination(2) { |a,b| p @vbuffer.distance_between(a,b) }
+        throw "This face isn't a right unit triangle! #{fid}"
+      end
+
+      fid1, fid2 = (@fbuffer.locate(hyp_verts.first) & @fbuffer.locate(hyp_verts.last)).uniq
+      
+      #existing_sqr = squares.each_with_index.map {|sqr,i| i if (sqr[:faces] & [fid1,fid2]).count==2 }.compact.first
+      existing_sqr = squares.inject(0) { |i,sqr| break i if (sqr[:faces] & [fid1,fid2]).count==2; i+1 }
+      if existing_sqr then
+        square_refs.last << existing_sqr
+      else
+        square_refs.last << squares.length
+        squares[mesh_id] << { faces: [fid1,fid2] }
+      end
+      faces.delete fid1
+      faces.delete fid2
+    end
+    
+    [squares,square_refs]
+  end
+  
+  def boundary_vertices refresh=true
+    return @boundary_vertices if @boundary_vertices and !refresh
     @fbuffer.ensure_uniqueness
     boundary_edges = []
     
@@ -389,6 +443,8 @@ module ShapeSet::Mesh
     
     # finally remove faces that have been replaced
     @fbuffer.remove faces_to_remove
+    @fbuffer.optimize
+    @vbuffer.optimize
     nil
   end
   

@@ -136,25 +136,39 @@ class TripleBuffer
         next if @empties.include? (i/3) + offset
         a << buffer[i..i+2].to_a
       end
-      offset += buffer.shape.last
+      offset += (buffer.shape.last or 0)
     end
     a
   end
   
+  def as_string decimals=5
+    optimize
+    if [:float,:bfloat].include? @type
+      places=10**decimals
+      (buffer.reshape(buffer.size)*places).to_i.to_a.map {|x| x.to_f/places }.join(",")
+    else
+      buffer.reshape(buffer.size).to_a.join(",")
+    end
+  end
+  
   def each_triple
+    return enum_for :each_triple unless block_given?
+    
     offset = 0
     @buffers.each do |buffer|
       (0...buffer.size).step(3) do |i|
         next if @empties.include? i/3 + offset
         yield buffer[i..i+2].to_a
       end
-      offset += buffer.shape.last
+      offset += (buffer.shape.last or 0)
       
     end
     offset
   end
   
   def each_triple_with_index &block
+    return enum_for :each_triple_with_index unless block_given?
+    
     real_i = -1
     offset = 0
     @buffers.each do |buffer|
@@ -162,7 +176,7 @@ class TripleBuffer
         next if @empties and @empties.include? i/3 + offset
         yield buffer[i..i+2].to_a, real_i+=1
       end
-      offset += buffer.shape.last
+      offset += (buffer.shape.last or 0)
     end
     offset
   end
@@ -207,11 +221,11 @@ class TripleBuffer
       @empties.sort!.each { |e| i += 1 if e <= i }
       got = nil
       @buffers.each do |buffer|
-        if i <  buffer.shape.last
+        if i <  (buffer.shape.last or 0)
           got = [buffer[i*3],buffer[i*3+1],buffer[i*3+2]] rescue nil
           break
         end
-        i -= buffer.shape.last
+        i -= (buffer.shape.last or 0)
       end
       got
     end
@@ -235,7 +249,7 @@ class TripleBuffer
       @empties.sort!.each { |e| int_i += 1 if e <= int_i }
       updated = false
       @buffers.each do |buffer|
-        if int_i < buffer.shape.last
+        if int_i < (buffer.shape.last or 0)
           buffer[int_i*3..int_i*3+2] rescue break   # test if index within range
           
           delete_from_index ext_i if indexed?
@@ -244,7 +258,7 @@ class TripleBuffer
           updated = true
           break
         end
-        int_i -= buffer.shape.last
+        int_i -= (buffer.shape.last or 0)
       end
       
       updated
@@ -291,28 +305,28 @@ class TripleBuffer
     used_indices.each do |i|
       abs_i = i
       @buffers.each do |buffer|
-        if i <  buffer.shape.last
+        if i <  (buffer.shape.last or 0)
           add_to_index [buffer[i*3],buffer[i*3+1],buffer[i*3+2]], abs_i
           break
         end
-        i -= buffer.shape.last
+        i -= (buffer.shape.last or 0)
       end
     end if indexed?
     
-    true
+    used_indices
   end
   
   def remove *indices
     # updates the indicated triples to zero and adds them to the empties
     # returns array of boolean values indicating truth for each index that was found and removed
     
-    [*indices].flatten.map do |i|
+    [*indices].flatten.sort.reverse.map do |i|
       ii = i
       @empties.sort!.each { |e| i += 1 if e <= i }
       real_i = i
       removed = false
       @buffers.each do |buffer|
-        if i < buffer.shape.last and !@empties.include? real_i
+        if i < (buffer.shape.last or 0) and !@empties.include? real_i
           buffer[i*3..i*3+2] rescue break
           delete_from_index(ii) if indexed?
           buffer[i*3..i*3+2] = 0
@@ -320,7 +334,7 @@ class TripleBuffer
           removed = true
           break
         end
-        i -= buffer.shape.last
+        i -= (buffer.shape.last or 0)
       end
       removed
     end
@@ -338,14 +352,70 @@ class TripleBuffer
     i2 = 0
     each_triple_with_index { |t,i| new_buffer[i2*3..i2*3+2], i2 = t, i2+1 unless indices.index i }
         
+    @empties = []
     @buffers = [new_buffer]
+    build_index if indexed?
+    true
+  end
+
+  def append_and_optimize triples
+    # validate triples
+    throw "Invalid triples: #{triples}" unless triples.map { |t| t.length == 3 }.all?
+    
+    new_buffer = case @type
+    when :float   then NArray.sfloat(3, size+triples.size)
+    when :bfloat  then NArray.float(3, size+triples.size)
+    when :int     then NArray.sint(3, size+triples.size)
+    when :bint    then NArray.int(3, size+triples.size)
+    end
+    
+    each_triple_with_index { |t,i| new_buffer[i*3..i*3+2] = t }
+    i = size
+    triples.each { |t| new_buffer[i*3..i*3+2] = t; i+=1 }
+        
+    @empties = []
+    @buffers = [new_buffer]
+    build_index if indexed?
     true
   end
   
-  def merge! other_buffer
-    append other_buffer.to_a
-  end
+  def merge! *other_buffers
+    # validate triples
+    additional_triples = other_buffers.map(&:size).inject(:+)
     
+    new_buffer = case @type
+    when :float   then NArray.sfloat(3, size+additional_triples)
+    when :bfloat  then NArray.float(3, size+additional_triples)
+    when :int     then NArray.sint(3, size+additional_triples)
+    when :bint    then NArray.int(3, size+additional_triples)
+    end
+    
+    each_triple_with_index { |t,i| new_buffer[i*3..i*3+2] = t }
+    i = size
+    other_buffers.each { |ob| ob.each_triple.each { |t| new_buffer[i*3..i*3+2] = t; i+=1 } }
+        
+    @empties = []
+    @buffers = [new_buffer]
+    build_index if indexed?
+    true
+  end
+  
+  def extend_by n
+    new_buffer = case @type
+    when :float   then NArray.sfloat(3, size+n)
+    when :bfloat  then NArray.float(3, size+n)
+    when :int     then NArray.sint(3, size+n)
+    when :bint    then NArray.int(3, size+n)
+    end
+    
+    each_triple_with_index { |t,i| new_buffer[i*3..i*3+2] = t }
+    
+    @empties = []
+    @buffers = [new_buffer]
+    build_index if indexed?
+    true
+  end
+  
   def optimize
     # collapse empty slots, merge extra and rebuild index
     return false if optimal?
@@ -492,9 +562,9 @@ class PointBuffer < TripleBuffer
   def average_of *indices
     begin # if an index is invalid then nget will cause an error
       ts = nget(*indices)
-      return ts.sum(1)/ts.shape.last
+      return ts.sum(1)/ts.shape.last.to_a
     rescue
-      return get(*indices).transpose.map {|xs| xs.inject(0,:+) / xs.length }
+      return get(*indices).transpose.map {|xs| xs.inject(0,:+) / xs.length }.to_a
     end
   end
   
@@ -628,9 +698,64 @@ class TriangleBuffer < TripleBuffer
     super params.merge(:type => :int)
   end
   
-  def faces_with i
+  def hypotenuse_of i, vbuffer, float_equality_threshold = 0.000001
+    x1,y1,z1, x2,y2,z2, x3,y3,z3 = vbuffer.get(get(i)).flatten
+    
+    sqr_a = ((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2)
+    sqr_b = ((x2-x3)**2 + (y2-y3)**2 + (z2-z3)**2)
+    sqr_c = ((x3-x1)**2 + (y3-y1)**2 + (z3-z1)**2)
+    
+    if (sqr_a - sqr_b + sqr_c).abs < float_equality_threshold
+      [x1,y1,z1, x2,y2,z2]
+    elsif (sqr_b - sqr_c + sqr_a).abs < float_equality_threshold
+      [x2,y2,z2, x3,y3,z3]
+    elsif (sqr_c - sqr_a + sqr_b).abs < float_equality_threshold
+      [x3,y3,z3, x1,y1,z1]
+    else
+      false
+    end
+  end
+  
+  def calculate_normal_of i, vbuffer=nil
+    # calculate a normal vector based on the order of the triangle vertices using the 'right-hand rule'
+    raise "No vbuffer available" unless vbuffer ||= @vbuffer
+    facet = vbuffer.get(*get(i)).flatten
+     
+    # define the vectors of two sides of the triangle
+    v1 = [ facet[3]-facet[0], facet[4]-facet[1], facet[5]-facet[2] ]
+    v2 = [ facet[6]-facet[0], facet[7]-facet[1], facet[8]-facet[2] ]
+    
+    # calculate the cross product
+    cp = [ v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1]-v1[1]*v2[0] ]
+    
+    # normalize the cross product
+    l = Math.sqrt( cp[0]**2 + cp[1]**2 + cp[2]**2 )
+    [ cp[0]/l, cp[1]/l, cp[2]/l ]
+  end
+  
+  def faces_with i1, i2=nil, i3=nil
     # Returns the set of all faces which include a reference to vertex i
-    get *locate(i)
+    if !i2
+      get *locate(i1)
+    elsif !i3
+      get *(locate(i1) & locate(i2))
+    else
+      get *(locate(i1) & locate(i2) & locate(i3))
+    end
+  end
+  
+  def faces_with2 i1, i2=nil, i3=nil
+    # Returns the set of all faces which include a reference to vertex i
+    if !i2
+      indices = locate(i1)
+      Hash[*indices.zip(get(*indices)).flatten(1)]
+    elsif !i3
+      indices = (locate(i1) & locate(i2))
+      Hash[*indices.zip(get(*indices)).flatten(1)]
+    else
+      indices = (locate(i1) & locate(i2) & locate(i3))
+      Hash[*indices.zip(get(*indices)).flatten(1)]
+    end
   end
   
   def neighbors_of i
