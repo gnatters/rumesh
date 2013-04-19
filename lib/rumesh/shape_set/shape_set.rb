@@ -22,7 +22,8 @@ class ShapeSet
     raise ArgumentError, "invalid path to c3d volume conversion tool" unless File.exist? path_to_c3d_tool
     
     @proc_dir = ( process_directory.end_with?("/") ? process_directory : process_directory + "/" )
-    @c3d = Convert3D.setup path_to_c3d_tool
+    Convert3D.path = path_to_c3d_tool
+    @c3d = Convert3D
     @mls = MeshLabServer.setup path_to_meshlabserver, mls_exec_dir
     
     # setup directory structure for process directory
@@ -303,21 +304,21 @@ class ShapeSet
           groups.each_with_index do |group, i|
             nudge_vector = group.map { |gs| squares[mesh_id][gs][:half_normal] }.transpose.map { |ns| ns.inject(:+) }
             l = Math.sqrt(nudge_vector[0]**2 + nudge_vector[1]**2 + nudge_vector[2]**2)*1000
+            nudge_vector.map! { |n| n/l }
             
             # need to nudge this vertex in this mesh, and in any guest or foreign meshes which are aligned to this post-split vertex
-            actions[mesh_id][:nudge_vertices][new_vs[i]] = nudge_vector.map! { |n| n/l } # nudge a distance of about 0.001
+            actions[mesh_id][:nudge_vertices][new_vs[i]] = nudge_vector # nudge a distance of about 0.001
+            group.each { |sqri| next unless sqrisquares[sqri][:vertices].map! { |sv| ( sv==v ? new_vs[i] : sv ) } }
             
             (seam[:gsquares]+seam[:fsquares]).map{|hsh| hsh.to_a.first}.each do |other_mesh_id, sqri|
-              
-              
-              squares[other_mesh_id][sqri]
-              # which vertex in this square is v???
-              
-              
-              actions[other_mesh_id][]
+              squares[other_mesh_id][sqri].each do |sqrv|
+         #       # not sure about this...
+                next unless sqrv.kind_of?(Numeric) and @meshes[other_mesh_id][:mesh].vbuffer.distance_to(sqrv, meta[:mesh].vbuffer[new_vs[i]]) < 0.001
+                actions[other_mesh_id][:nudge_vertices][sqrv] = nudge_vector
+                
+                group.each { |sqri| squares[sqri][:vertices].map! { |sv| ( sv==v ? new_vs[i] : sv ) } }
+              end
             end
-            
-            group.each { |sqri| squares[sqri][:vertices].map! { |sv| ( sv==v ? new_vs[i] : sv ) } }
             
             
           end
@@ -434,7 +435,7 @@ class ShapeSet
       next if matches.empty?
       @meshes[m1][:matches][m2] = matches
       @meshes[m2][:matches][m1] = matches.invert
-      print"."
+      print"." if verbose
     end
   end
   
